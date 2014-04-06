@@ -22,6 +22,22 @@ public class ProcurementServiceConfiguration extends Configuration {
     @NotNull
     @JsonProperty
     private JerseyClientConfiguration httpClient = new JerseyClientConfiguration();
+    
+    @NotEmpty
+    @JsonProperty
+    private String apolloUser;
+    
+    @NotEmpty
+    @JsonProperty
+    private String apolloPassword;
+    
+    @NotEmpty
+    @JsonProperty
+    private String apolloHost;
+    
+    @NotEmpty
+    @JsonProperty
+    private String apolloPort;
 
     /**
      * 
@@ -53,5 +69,21 @@ public class ProcurementServiceConfiguration extends Configuration {
     public void setStompTopicPrefix(String stompTopicPrefix) {
 	this.stompTopicPrefix = stompTopicPrefix;
     }
+    
+    public String getApolloUser() {
+    	return apolloUser;
+    }
 
+    public String getApolloPassword() {
+    	return apolloPassword;
+    }
+    
+    public String getApolloHost() {
+    	return apolloHost;
+    }
+    
+    public String getApolloPort() {
+    	return apolloPort;
+    }
 }
+

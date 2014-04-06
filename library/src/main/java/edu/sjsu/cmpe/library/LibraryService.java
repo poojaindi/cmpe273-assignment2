@@ -1,5 +1,11 @@
 package edu.sjsu.cmpe.library;
 
+import java.net.MalformedURLException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+import javax.jms.JMSException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,6 +18,7 @@ import com.yammer.dropwizard.views.ViewBundle;
 import edu.sjsu.cmpe.library.api.resources.BookResource;
 import edu.sjsu.cmpe.library.api.resources.RootResource;
 import edu.sjsu.cmpe.library.config.LibraryServiceConfiguration;
+import edu.sjsu.cmpe.library.domain.LibraryConsumer;
 import edu.sjsu.cmpe.library.repository.BookRepository;
 import edu.sjsu.cmpe.library.repository.BookRepositoryInterface;
 import edu.sjsu.cmpe.library.ui.resources.HomeResource;
@@ -41,14 +48,41 @@ public class LibraryService extends Service<LibraryServiceConfiguration> {
 		configuration.getLibraryName(), queueName,
 		topicName);
 	// TODO: Apollo STOMP Broker URL and login
+	String libraryname = configuration.getLibraryName();
+	String apolloHost = configuration.getApolloHost();
+	String apolloPort = configuration.getApolloPort();
+	String apolloUser = configuration.getApolloUser();
+	String apolloPassword = configuration.getApolloPassword();
 
 	/** Root API */
 	environment.addResource(RootResource.class);
 	/** Books APIs */
 	BookRepositoryInterface bookRepository = new BookRepository();
-	environment.addResource(new BookResource(bookRepository));
+	environment.addResource(new BookResource(bookRepository, queueName, topicName, libraryname, apolloHost, apolloPort, apolloUser, apolloPassword ));
 
 	/** UI Resources */
 	environment.addResource(new HomeResource(bookRepository));
-    }
+	
+	final LibraryConsumer libraryConsumer = new LibraryConsumer(bookRepository, queueName, topicName, libraryname, apolloHost, apolloPort, apolloUser, apolloPassword);
+	 int numThreads = 1;
+	 ExecutorService executor = Executors.newFixedThreadPool(numThreads);
+	  
+	 Runnable backgroundTask = new Runnable() {
+	  
+	 @Override
+	 public void run() {
+		// System.out.println("Hello World");
+		 try {
+			libraryConsumer.listenQueue();
+		} catch (JMSException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedURLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	 }
+	 };
+	 executor.execute(backgroundTask);
+	 }
 }

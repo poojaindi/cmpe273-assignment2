@@ -35,6 +35,16 @@
 			<artifactId>dropwizard-views</artifactId>
 			<version>${dropwizard.version}</version>
 		</dependency>
+		 <dependency>
+    		<groupId>org.apache.geronimo.specs</groupId>
+    		<artifactId>geronimo-jms_1.1_spec</artifactId>
+    		<version>1.1.1</version>
+  		</dependency>
+  		<dependency>
+			<groupId>org.fusesource.stompjms</groupId>
+			<artifactId>stompjms-client</artifactId>
+			<version>1.13</version>
+		</dependency>
 	</dependencies>
 
 	<build>
@@ -125,6 +135,19 @@
 					<skip>true</skip>
 					<skipDeploy>true</skipDeploy>
 				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.fusesource.mvnplugins</groupId>
+				<artifactId>maven-uberize-plugin</artifactId>
+				<version>1.14</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>uberize</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
