@@ -52,7 +52,12 @@
 			<groupId>com.yammer.dropwizard</groupId>
             <artifactId>dropwizard-client</artifactId>
             <version>${dropwizard.version}</version>
-		</dependency>
+		</dependency>	
+		<dependency>
+        <groupId>org.json</groupId>
+        <artifactId>json</artifactId>
+        <version>20070829</version>
+      </dependency>
 	</dependencies>
 
 	<build>
